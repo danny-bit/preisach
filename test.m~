@@ -1,0 +1,26 @@
+N = 10;
+u_delta = 10/N;
+
+gamma = zeros(N,2);
+
+count = 1;
+for alpha_k = 1:N
+    for beta_k = 1:alpha_k
+        count = count+1;
+        gamma(count,:) = [u_delta*beta_k, u_delta*alpha_k];
+    end
+end
+
+mu = ones(length(gamma),1);
+
+u = 0:0.1:10;
+u = [u; fliplr(u)];
+
+clear implement1
+
+for k = 1:length(u)
+    w = implement1(u,gamma,mu);
+end
+
+figure;
+plot(
