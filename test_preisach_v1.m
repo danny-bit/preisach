@@ -1,13 +1,13 @@
 N = 50;
 u_delta = 10/N;
 
-gamma = zeros(N,2);
+gamma = zeros(N,3);
 
 count = 1;
 for alpha_k = 1:N
     for beta_k = 1:alpha_k
         count = count+1;
-        gamma(count,:) = [u_delta*alpha_k, u_delta*beta_k];
+        gamma(count,:) = [u_delta*alpha_k, u_delta*beta_k, 0];
     end
 end
 
@@ -25,12 +25,11 @@ u = [u, 7:-0.1:4];
 u = [u, 4:0.1:6];
 %u = [u, 6:-0.1:0];
 
-clear implement1
 
 w = [];
 
 for k = 1:length(u)
-    [tmp,gamma_hat] = preisach_v1(u(k),gamma,mu);
+    [tmp,gamma] = preisach_v1(u(k),gamma,mu);
     w(k) = tmp;
 end
 

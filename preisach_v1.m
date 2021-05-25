@@ -1,4 +1,4 @@
-function [y, gamma_hat_out] = preisach_v1(u, gamma, mu)
+function [y, gamma] = preisach_v1(u, gamma, mu)
 % preisach_v1 ... straight-forward impelementation of the 
 % preisach hysteresis model
 %
@@ -10,8 +10,8 @@ function [y, gamma_hat_out] = preisach_v1(u, gamma, mu)
 %
 % inputs:
 % u ... scalar input
-% gamma (N,2) ... tuples describing the hysteron grid
-%                 [(alpha_k, beta_k)]
+% gamma (N,3) ... tuples describing the hysteron grid
+%                 [(alpha_k, beta_k, hysteron_alpha/beta_state)]
 % mu(N,1) ... hysteron weighting function     
 %             TBD consider: mu as a function with mu(alpha,beta) 
 %                           e.g. a distribution
@@ -25,23 +25,14 @@ function [y, gamma_hat_out] = preisach_v1(u, gamma, mu)
     
     N_hysterons = size(gamma,1);
     
-    % gamma_hat (N,1) ... hysteron state 
-    persistent gamma_hat
-    
-    if (isempty(gamma_hat))
-        % initialize hysteresis
-        gamma_hat = zeros(N_hysterons,1);
-    end
-    
     for k_hysteron= 1:N_hysterons
         % update hysteron state
         alpha_k = gamma(k_hysteron,1);
         beta_k = gamma(k_hysteron,2);
-        gamma_hat(k_hysteron) = hyst_relay(u,gamma_hat(k_hysteron),...
-                                           alpha_k,beta_k);
+        state_k = gamma(k_hysteron,3);
+        gamma(k_hysteron,3) = hyst_relay(u,state_k, alpha_k,beta_k);
     end
     
     % apply weighting function
-    y = mu'*gamma_hat;
-    gamma_hat_out = gamma_hat;
+    y = mu'*gamma(:,3);
 end
