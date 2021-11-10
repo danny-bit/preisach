@@ -28,10 +28,14 @@ plot(memory_curve(:,2),memory_curve(:,1),'x-k')
 memory_curve = update_memory_curve(1,memory_curve);
 plot(memory_curve(:,2),memory_curve(:,1),'x-c')
 
+return
+
+%%
 clear hyst_callback
 f = figure;
-ax = axes(f);
+ax = subplot(211);
+ax2 = subplot(212);
 b = uicontrol('Parent',f,'Style','slider','Position',[81,54,419,23],...
-              'value',[-5], 'min',-5, 'max',15);
-b.Callback = @(es,ed) hyst_callback(es.Value,ax) ;
+              'value',[-2], 'min',-2, 'max',10);
+b.Callback = @(es,ed) hyst_callback(es.Value,ax,ax2) ;
 

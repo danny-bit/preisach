@@ -1,4 +1,13 @@
 function y = hyst_relay(u, x, alpha, beta)
+% hyst_relay ... hysterion with relay function 
+% 
+%
+% u ... input
+% x ... hysteron state
+% alpha ... hysteron values
+% beta ... hysteron values
+
+%%
 
     if (u>=alpha)
         y = 1;
@@ -7,6 +16,3 @@ function y = hyst_relay(u, x, alpha, beta)
     else
         y = x;
     end
-    
-    % alternative formulation
-    % 	y(t)=min[sign(x−β),max[y(t−),sign(x−α)]].
