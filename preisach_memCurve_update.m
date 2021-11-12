@@ -1,16 +1,19 @@
-function memory_curve = update_memory_curve (u, uRange, memory_curve)
-%  memory_curve = update_memory_curve (u, memory_curve)
+function memory_curve = preisach_memCurve_update (u, uRange, memory_curve)
+%%  memory_curve = preisach_memCurve_update (u, uRange, memory_curve)
 %
 % inputs:
-% u      ... current input
-% uRange ... range of the input [uMin, uMax]
+% u (1,1)            ... scalar input
+% uRange (2,1)       ... range of the input [uMin, uMax]
 % memory_curve (:,2) ... list of vertices of memory curve (alpha_k,beta_k)
-%                     - memory_curve(1,:) be on left side of triangle
+%                     - memory_curve(1,:) must be on left side of triangle
 %                     - points must form a staircase (tuples of
 %                       consecutive points must have a common element)
 %                     - memory_curve(end,:) must be a point on the
 %                       hypothenuse of the triangle (alpha,beta), with
 %                       alpha = beta
+%
+% outputs:
+% memory_curve (:,2) ... updated list of vertices of memory curve
 
 %% prepare
 
@@ -19,7 +22,7 @@ function memory_curve = update_memory_curve (u, uRange, memory_curve)
     uMax  = uRange(2);
 
     % noise supression: detect increasing / decreasing with a limit
-    deltaU_min = 10^-5; 
+    deltaU_min = 2; 
     
     % initialize
     if (isempty(memory_curve))
@@ -42,6 +45,7 @@ function memory_curve = update_memory_curve (u, uRange, memory_curve)
         return
     end
     
+    % detect update direction
     if ((u - u_prev) > deltaU_min)
         direction = 1; % increasing
     elseif (-(u - u_prev) > deltaU_min) 
@@ -50,8 +54,9 @@ function memory_curve = update_memory_curve (u, uRange, memory_curve)
         return
     end
     
+    % update of memory curve
     if (direction == 1)
-        % increasing; "update alpha values"
+        % increasing; update alpha values
 
         % whipeout propery 
         % -> erase all below and on "horizontal" input line
@@ -68,7 +73,7 @@ function memory_curve = update_memory_curve (u, uRange, memory_curve)
         memory_curve(end+1, :) = [u,u];
         
     elseif (direction == -1)
-        % decreasing; "update beta values"
+        % decreasing; update beta values
         
         % whipeout propery 
         % -> erase all points to the right and on  "vertical" input line
